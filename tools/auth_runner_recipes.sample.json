@@ -1,0 +1,79 @@
+{
+  "services": [
+    {
+      "name": "netlify-oauth",
+      "connection_id": "netlify",
+      "mcp_url": "https://server.smithery.ai/netlify",
+      "credentials": {
+        "username": "bw:item:netlify-main:username",
+        "password": "bw:item:netlify-main:password",
+        "totp": "bw:item:netlify-main:totp"
+      },
+      "auth": {
+        "poll_timeout_sec": 240,
+        "poll_interval_sec": 4
+      },
+      "acquisition": {
+        "provider": "netlify",
+        "mode": "oauth_ticket_exchange",
+        "requires_connected_connection": false,
+        "params": {
+          "client_id": "d6f37de6614df7ae58664cfca524744d73807a377f5ee71f1a254f78412e3750"
+        }
+      },
+      "gmail": {
+        "connection_id": "gmail-ljm",
+        "query": "subject:(netlify OR verification OR code OR otp) newer_than:2d",
+        "sender_allowlist": [
+          "netlify.com"
+        ],
+        "max_results": 10
+      },
+      "doppler": {
+        "project": "motto-core",
+        "config": "prd",
+        "secret_key": "NETLIFY_PERSONAL_ACCESS_TOKEN",
+        "value": "acquisition:value"
+      }
+    },
+    {
+      "name": "composio-input-required",
+      "connection_id": "composio",
+      "mcp_url": "https://server.smithery.ai/composio",
+      "credentials": {
+        "username": "bw:item:composio-platform:username",
+        "password": "bw:item:composio-platform:password",
+        "totp": "bw:item:composio-platform:totp"
+      },
+      "auth": {
+        "poll_timeout_sec": 240,
+        "poll_interval_sec": 4
+      },
+      "auth_probe_tool": "auth.session.info.list",
+      "input_values": {
+        "query": {
+          "ApiKeyAuth": "bw:item:composio-platform:api_key"
+        }
+      },
+      "acquisition": {
+        "provider": "composio",
+        "mode": "project_api_key_regenerate"
+      },
+      "gmail": {
+        "connection_id": "gmail-lkm",
+        "query": "subject:(composio OR verification OR code OR otp) newer_than:2d",
+        "sender_allowlist": [
+          "composio.dev",
+          "composio"
+        ],
+        "max_results": 10
+      },
+      "doppler": {
+        "project": "motto-core",
+        "config": "prd",
+        "secret_key": "COMPOSIO_API_KEY",
+        "value": "acquisition:value"
+      }
+    }
+  ]
+}

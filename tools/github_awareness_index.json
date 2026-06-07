@@ -1,0 +1,186 @@
+{
+  "generated_at": "2026-06-01T02:32:17Z",
+  "owner": "lkmotto",
+  "repo_count": 7,
+  "pharaoh": {
+    "ready": true,
+    "status": "User: lkmotto\n\nPlan: Free (lkmotto)\nTools: 8 free + 8 preview-only (upgrade to unlock: check_reachability, get_vision_docs, get_vision_gaps, get_cross_repo_audit, get_consolidation_opportunities, get_unused_code, get_test_coverage, get_regression_risk)\nLive repo: lkmotto/motto-appraisal-pipeline \u2014 auto-refresh + PR Guard\nRepos: 35 queryable (1 live, rest are snapshots)\nRefresh: live repo via webhooks; others via manual refresh_repo\nHint: use set_free_repo to change your live repo (moves auto-refresh + PR Guard).\n\nSubscriptions:\n  lkmotto: Personal ($27/mo) \u2014 not subscribed (primary)\n\nPR Guard enabled (45 repos):\n  - lkmotto/appraisal-automation-demo (preview)\n  - lkmotto/appraisalos-bidding (preview)\n  - lkmotto/appraisalos-site (preview)\n  - lkmotto/desktop-tutorial (preview)\n  - lkmotto/downtime-app (preview)\n  - lkmotto/downtime-backend (preview)\n  - lkmotto/downtime-dfw (preview)\n  - lkmotto/downtime-email-agent (preview)\n  - lkmotto/downtime-event-agent (preview)\n  - lkmotto/factory-perplexity-mcp (preview)\n  - lkmotto/fleet-control (preview)\n  - lkmotto/flotilla (preview)\n  - lkmotto/gate-unlock-kit (preview)\n  - lkmotto/hostinger-mcp-server (preview)\n  - lkmotto/idea-archive (preview)\n  - lkmotto/Indigo (preview)\n  - lkmotto/life-design (preview)\n  - lkmotto/linkedin-recruiter-mcp (preview)\n  - lkmotto/lkmotto (preview)\n  - lkmotto/longevity-evidence-platform (preview)\n  - lkmotto/motto-appraisal-cockpit (preview)\n  - lkmotto/motto-appraisal-pipeline (preview)\n  - lkmotto/motto-appraisal-privacy (preview)\n  - lkmotto/motto-appraisal-service-privacy (preview)\n  - lkmotto/motto-appraisal-site (preview)\n  - lkmotto/motto-conductor (preview)\n  - lkmotto/motto-credential-grabber (preview)\n  - lkmotto/motto-director (preview)\n  - lkmotto/motto-distribution (preview)\n  - lkmotto/motto-finance-tracker (preview)\n  - lkmotto/motto-fleet-burn-rate-tracker (preview)\n  - lkmotto/motto-fleet-provisioner (preview)\n  - lkmotto/motto-linkedin-ads (preview)\n  - lkmotto/motto-linkedin-mcp (preview)\n  - lkmotto/motto-mcp-server (preview)\n  - lkmotto/motto-outreach (preview)\n  - lkmotto/motto-plaid-sync (preview)\n  - lkmotto/motto-sdr-agent (preview)\n  - lkmotto/motto-sharpener (preview)\n  - lkmotto/motto-shortform (preview)\n  - lkmotto/motto-social-agent (preview)\n  - lkmotto/motto-video-agent (preview)\n  - lkmotto/nextjs-example-website-boilerplate (preview)\n  - lkmotto/optimization-db (preview)\n  - lkmotto/rw-order-monitor (preview)\n  lkmotto: preview mode (checks run, never block merges)\n\nDashboard: https://mcp.pharaoh.so/dashboard\n\nManage billing: https://mcp.pharaoh.so/manage\n\nInstall on another org: https://github.com/apps/pharaoh-so/installations/new\n\n\u2500\u2500 Upgrade to Pharaoh Pro \u2500\u2500\nPrice: $27/mo (33% off first month \u2192 $18.09/mo)\nCheckout: https://mcp.pharaoh.so/billing/auth?intent=checkout&tenant=lkmotto&promo=promo_1TdEa2CRUTGi2SvjV9ODSeX1",
+    "next_step": null
+  },
+  "repos": [
+    {
+      "full_name": "lkmotto/factory-perplexity-mcp",
+      "description": "Factory Droid swarm MCP server for Perplexity",
+      "language": "TypeScript",
+      "default_branch": "master",
+      "updated_at": "2026-05-27T16:45:00Z",
+      "private": false,
+      "root_paths": [
+        ".github",
+        ".gitignore",
+        "README.md",
+        "package-lock.json",
+        "package.json",
+        "src",
+        "tsconfig.json",
+        "wrangler.toml"
+      ],
+      "stack_guess": [
+        "github-actions",
+        "node",
+        "npm"
+      ]
+    },
+    {
+      "full_name": "lkmotto/hostinger-mcp-server",
+      "description": "Hostinger API MCP server for Perplexity Computer connector",
+      "language": "JavaScript",
+      "default_branch": "main",
+      "updated_at": "2026-05-23T17:39:00Z",
+      "private": false,
+      "root_paths": [
+        ".devcontainer",
+        ".fleet",
+        ".github",
+        ".pre-commit-config.yaml",
+        ".release-please-manifest.json",
+        "CONTRIBUTING.md",
+        "Dockerfile",
+        "README.md",
+        "docker-compose.yml",
+        "northflank.json",
+        "release-please-config.json",
+        "server.js"
+      ],
+      "stack_guess": [
+        "docker",
+        "github-actions",
+        "node"
+      ]
+    },
+    {
+      "full_name": "lkmotto/linkedin-recruiter-mcp",
+      "description": null,
+      "language": "Python",
+      "default_branch": "master",
+      "updated_at": "2026-05-27T16:39:13Z",
+      "private": false,
+      "root_paths": [
+        ".gitignore",
+        "Dockerfile",
+        "README.md",
+        "SECURITY.md",
+        "linkedin_mcp.py",
+        "pyproject.toml",
+        "rotate.ps1",
+        "tests",
+        "uv.lock"
+      ],
+      "stack_guess": [
+        "docker",
+        "python"
+      ]
+    },
+    {
+      "full_name": "lkmotto/lkmotto",
+      "description": "Config files for my GitHub profile.",
+      "language": null,
+      "default_branch": "main",
+      "updated_at": "2023-11-10T17:44:56Z",
+      "private": false,
+      "root_paths": [
+        "README.md"
+      ],
+      "stack_guess": []
+    },
+    {
+      "full_name": "lkmotto/motto-appraisal-privacy",
+      "description": "Privacy Policy for Motto Appraisal Service (mottoappraisal.carrd.co)",
+      "language": "HTML",
+      "default_branch": "main",
+      "updated_at": "2026-05-11T18:42:16Z",
+      "private": false,
+      "root_paths": [
+        ".devcontainer",
+        ".fleet",
+        ".github",
+        ".pre-commit-config.yaml",
+        ".release-please-manifest.json",
+        "CONTRIBUTING.md",
+        "README.md",
+        "index.html",
+        "release-please-config.json"
+      ],
+      "stack_guess": [
+        "github-actions",
+        "static-web"
+      ]
+    },
+    {
+      "full_name": "lkmotto/motto-appraisal-service-privacy",
+      "description": "Privacy Policy for Motto Appraisal Service",
+      "language": "HTML",
+      "default_branch": "main",
+      "updated_at": "2026-05-11T18:42:13Z",
+      "private": false,
+      "root_paths": [
+        ".devcontainer",
+        ".fleet",
+        ".github",
+        ".pre-commit-config.yaml",
+        ".release-please-manifest.json",
+        "CONTRIBUTING.md",
+        "README.md",
+        "index.html",
+        "release-please-config.json"
+      ],
+      "stack_guess": [
+        "github-actions",
+        "static-web"
+      ]
+    },
+    {
+      "full_name": "lkmotto/motto-appraisal-site",
+      "description": "Motto Appraisal Service website \u2014 mottoappraisal.netlify.app",
+      "language": "HTML",
+      "default_branch": "main",
+      "updated_at": "2026-04-21T20:06:44Z",
+      "private": false,
+      "root_paths": [
+        "README.md",
+        "_redirects",
+        "about.html",
+        "assets",
+        "beehiiv-template.html",
+        "blog",
+        "contact.html",
+        "divorce-appraisal.html",
+        "estate-appraisal.html",
+        "hero-canvas.js",
+        "index.html",
+        "keller-tx-appraiser.html",
+        "netlify",
+        "netlify.toml",
+        "newsletter.html",
+        "order-crebrid.html",
+        "order.html",
+        "pmi-removal-appraisal.html",
+        "pre-listing-appraisal.html",
+        "privacy.html",
+        "refinance-appraisal.html",
+        "roanoke-tx-appraiser.html",
+        "robots.txt",
+        "script.js",
+        "services.html",
+        "sitemap.xml",
+        "southlake-tx-appraiser.html",
+        "styles.css",
+        "tax-protest-appraisal.html",
+        "trophy-club-tx-appraiser.html"
+      ],
+      "stack_guess": [
+        "static-web"
+      ]
+    }
+  ]
+}

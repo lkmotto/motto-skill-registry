@@ -1,4 +1,9 @@
 # motto-skills installer (PowerShell / Windows)
+# Clones or refreshes skills + knowledge + hooks from the motto-skills repo.
+#
+# Usage:
+#   .\install.ps1          Install everything (skips existing knowledge/policy)
+#   .\install.ps1 -Force   Overwrite existing knowledge store and policy
 param([switch]$Force)
 
 $ErrorActionPreference = "Stop"
@@ -7,6 +12,7 @@ $SOURCE_SKILLS_DIR = "$MOTTO_SKILLS_HOME\skills"
 $TARGET_SKILLS_DIR = "$env:USERPROFILE\.factory\skills"
 $TARGET_KNOWLEDGE_DIR = "$env:USERPROFILE\.factory\knowledge"
 $TARGET_POLICY_FILE = "$env:USERPROFILE\.factory\skill-broker.policy.json"
+$TARGET_HOOKS_FILE = "$env:USERPROFILE\.factory\hooks.json"
 $TARGET_TOOLS_PATH = "$env:USERPROFILE\motto-skills\tools\"
 
 Write-Host "=== motto-skills installer ==="
@@ -51,10 +57,27 @@ if (Test-Path "$MOTTO_SKILLS_HOME\policy\skill-broker.policy.json") {
   }
 }
 
+# --- Auto-Sync Hooks ---
+Write-Host "Installing knowledge sync hooks..."
+if (Test-Path "$MOTTO_SKILLS_HOME\policy\hooks.json") {
+  if (-not (Test-Path $TARGET_HOOKS_FILE) -or $Force) {
+    Copy-Item -Force "$MOTTO_SKILLS_HOME\policy\hooks.json" $TARGET_HOOKS_FILE
+    Write-Host "  + hooks.json (auto-sync on session start/end)"
+  } else {
+    Write-Host "  ~ hooks.json (already exists, skipped - use -Force to overwrite)"
+  }
+}
+
 Write-Host ""
 Write-Host "=== Done ==="
 Write-Host "Skills installed into: $TARGET_SKILLS_DIR"
 Write-Host "Knowledge store at:   $TARGET_KNOWLEDGE_DIR"
+Write-Host "Hooks at:             $TARGET_HOOKS_FILE"
+Write-Host ""
+Write-Host "Cross-machine sync:"
+Write-Host "  .\sync.ps1 auto      Auto-sync (push + pull)"
+Write-Host "  .\sync.ps1 push      Push local knowledge to git"
+Write-Host "  .\sync.ps1 pull      Pull shared knowledge from git"
 Write-Host ""
 Write-Host "Required CLIs to install if missing:"
 Write-Host "  - scrapfly (https://scrapfly.io/docs/sdk/python)"

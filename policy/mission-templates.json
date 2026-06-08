@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "description": "Maps GitHub issue labels to mission dispatch configurations",
+  "defaults": {
+    "auto_level": "high",
+    "create_pr": true,
+    "close_issue_on_success": false,
+    "allowed_actions": ["read", "write", "execute"],
+    "max_duration_minutes": 60
+  },
+  "templates": {
+    "mission": {
+      "type": "general",
+      "auto_level": "high",
+      "description": "General mission — issue body is the brief",
+      "create_pr": true,
+      "close_issue_on_success": false
+    },
+    "mission:fix": {
+      "type": "bug-fix",
+      "auto_level": "high",
+      "description": "Fix the described bug, create PR with tests",
+      "create_pr": true,
+      "close_issue_on_success": true,
+      "required_artifacts": ["git diff", "test results", "PR link"]
+    },
+    "mission:review": {
+      "type": "code-review",
+      "auto_level": "medium",
+      "description": "Review described scope, report findings, no code changes",
+      "create_pr": false,
+      "close_issue_on_success": false,
+      "allowed_actions": ["read"],
+      "required_artifacts": ["review report"]
+    },
+    "mission:refactor": {
+      "type": "refactor",
+      "auto_level": "medium",
+      "description": "Refactor described component with tests, create PR",
+      "create_pr": true,
+      "close_issue_on_success": false,
+      "required_artifacts": ["git diff", "test results", "PR link"]
+    },
+    "mission:docs": {
+      "type": "docs-update",
+      "auto_level": "high",
+      "description": "Update documentation per description",
+      "create_pr": true,
+      "close_issue_on_success": true,
+      "allowed_actions": ["read", "write"]
+    },
+    "mission:investigate": {
+      "type": "investigation",
+      "auto_level": "medium",
+      "description": "Research and report findings, no code changes",
+      "create_pr": false,
+      "close_issue_on_success": false,
+      "allowed_actions": ["read"],
+      "required_artifacts": ["investigation report"]
+    },
+    "pr_merged": {
+      "type": "post-merge-validation",
+      "auto_level": "high",
+      "description": "Run tests, verify deploy health, report status",
+      "create_pr": false,
+      "close_issue_on_success": false,
+      "allowed_actions": ["read", "execute"],
+      "required_artifacts": ["test results", "deploy status"]
+    }
+  }
+}

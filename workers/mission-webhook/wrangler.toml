@@ -1,0 +1,15 @@
+name = "mission-webhook"
+main = "src/index.js"
+compatibility_date = "2025-06-08"
+
+[[kv_namespaces]]
+binding = "MISSION_QUEUE"
+id = "46f95e910b804865ae47917b21d2ecec"
+
+[vars]
+# Set via: wrangler secret put GITHUB_WEBHOOK_SECRET
+# Set via: wrangler secret put GITHUB_TOKEN
+
+[observability]
+enabled = true
+head_sampling_rate = 1

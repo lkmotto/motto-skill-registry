@@ -1,1 +1,100 @@
-{}
+﻿{
+    "mcpServers":  {
+                       "sfrep-mcp":  {
+                                         "type":  "stdio",
+                                         "disabled":  false,
+                                         "_pathSynced":  true,
+                                         "_sourceDevice":  "laptop"
+                                     },
+                       "hermes":  {
+                                      "url":  "http://100.108.199.10:18150",
+                                      "headers":  {
+                                                      "Authorization":  "Bearer 0584b184ed9981a6b9acd7bbc65c44fb4e42f8c7acad24314fcf278b858202c0"
+                                                  },
+                                      "disabled":  false,
+                                      "type":  "http"
+                                  },
+                       "hermes-ms01-public":  {
+                                                  "url":  "https://ms01-1.tailae88fa.ts.net/mcp",
+                                                  "headers":  {
+                                                                  "Authorization":  "Bearer 0584b184ed9981a6b9acd7bbc65c44fb4e42f8c7acad24314fcf278b858202c0"
+                                                              },
+                                                  "disabled":  false,
+                                                  "type":  "http"
+                                              },
+                       "smithery-toolbox":  {
+                                                "type":  "http",
+                                                "url":  "https://mcp.smithery.run/ljm32901",
+                                                "disabled":  false
+                                            },
+                       "hermes-ms01":  {
+                                           "url":  "http://100.108.199.10:18150",
+                                           "headers":  {
+                                                           "Authorization":  "Bearer 0584b184ed9981a6b9acd7bbc65c44fb4e42f8c7acad24314fcf278b858202c0"
+                                                       },
+                                           "disabled":  false,
+                                           "type":  "http"
+                                       },
+                       "prompt-caching-mcp":  {
+                                                  "type":  "stdio",
+                                                  "command":  "prompt-caching-mcp",
+                                                  "args":  [
+
+                                                           ],
+                                                  "disabled":  false
+                                              },
+                       "hermes-hostinger":  {
+                                                "url":  "http://srv1511806.hstgr.cloud:8150",
+                                                "headers":  {
+                                                                "Authorization":  "Bearer 0584b184ed9981a6b9acd7bbc65c44fb4e42f8c7acad24314fcf278b858202c0"
+                                                            },
+                                                "disabled":  false,
+                                                "type":  "http"
+                                            },
+                       "tavily":  {
+                                      "type":  "stdio",
+                                      "command":  "doppler",
+                                      "args":  [
+                                                   "run",
+                                                   "--project",
+                                                   "motto-core",
+                                                   "--config",
+                                                   "prd",
+                                                   "--",
+                                                   "npx",
+                                                   "-y",
+                                                   "tavily-mcp@latest"
+                                               ],
+                                      "disabled":  false
+                                  },
+                       "bitwarden":  {
+                                         "type":  "stdio",
+                                         "command":  "mcp-server-bitwarden",
+                                         "args":  [
+
+                                                  ],
+                                         "env":  {
+                                                     "BW_SESSION":  "Pjy0qUccHIJJOwd4MasXfZVh8NhikVZdi4PEwCxsG4XiUD8neI9M4JxcOsFuKS35PmoJWtHfB4tn0xkbXZVp8A==",
+                                                     "BW_CLIENT_ID":  "user.a4abc8f9-e8a6-49f3-ac90-b45f0161b64b",
+                                                     "BW_CLIENT_SECRET":  "sYP9E0jmJzsbjJxCeBRsm2ideM0Eg8"
+                                                 },
+                                         "disabled":  false
+                                     },
+                       "perplexity":  {
+                                          "type":  "stdio",
+                                          "command":  "doppler",
+                                          "args":  [
+                                                       "run",
+                                                       "--project",
+                                                       "motto-core",
+                                                       "--config",
+                                                       "prd",
+                                                       "--",
+                                                       "npx",
+                                                       "-y",
+                                                       "@perplexity-ai/mcp-server"
+                                                   ],
+                                          "disabled":  false
+                                      }
+                   }
+}

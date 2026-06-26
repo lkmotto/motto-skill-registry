@@ -1,0 +1,40 @@
+---
+name: github-code-awareness
+description: Enforce a repeatable pre-build workflow using Pharaoh and GitHub tools so agents build on existing code instead of duplicating functionality.
+---
+
+# GitHub Code Awareness
+
+Use this before implementation work across repositories.
+
+## Pre-build sequence (must follow)
+
+1. Inventory target repos (GitHub `search_repositories` scoped to owner/org).
+2. For the target repo, run Pharaoh orientation first:
+   - `get_codebase_map` or `pharaoh_recon`
+3. Before writing any new function/component:
+   - `search_functions` (Pharaoh)
+   - `search_code` (GitHub MCP) as fallback cross-check
+4. For risky edits/refactors:
+   - `get_blast_radius`
+   - `query_dependencies`
+5. Before merge:
+   - `check_reachability`
+   - `get_unused_code` (optional cleanup pass)
+
+## Repo health operations
+
+- `pharaoh_account(action=status)` to verify mapping state
+- `pharaoh_account(action=refresh_repo, repo=<owner/repo>)` after significant refactors
+- `pharaoh_account(action=enable_pr_guard, repos=[...])` for critical repos
+
+## Local awareness index (cross-session anchor)
+
+- Refresh script: `python C:\Users\lkmot\tools\github_awareness_refresh.py --owner lkmotto`
+- Output index: `C:\Users\lkmot\tools\github_awareness_index.json`
+- Use this index first to identify repo stacks and existing modules before opening files.
+
+## Policy
+
+- Never implement a new helper/module until step 3 confirms no suitable existing implementation.
+- Prefer extending discovered code paths over parallel reimplementation.

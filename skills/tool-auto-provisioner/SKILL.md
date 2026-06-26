@@ -1,0 +1,233 @@
+---
+name: tool-auto-provisioner
+version: 1.0.0
+description: |
+  Triggered when any session or mission hits a "missing tool" blocker. Immediately searches
+  Smithery, Glama, and MCP Market for existing solutions via the mcp-connection-triage
+  ladder. If nothing exists, scopes a custom MCP build plan. Auto-builds for low-risk
+  tools, asks one question for medium-risk. Closes the loop between "I need X" and
+  "X now exists" without manual procurement management.
+when_to_use: |
+  Automatically when any session encounters a "missing tool" or "missing capability"
+  blocker. Also when capability-gap-detector surfaces an auto-buildable gap. Manual
+  trigger: "find a tool for X", "I need an MCP for Y", "provision tool Z",
+  "what tool can do W".
+tags: [self-learning, tools, mcp, provisioning, automation, procurement]
+---
+
+# Tool Auto-Provisioner
+
+The final link in the self-learning chain. When everything else knows what's missing,
+this skill makes it exist.
+
+## Activation
+
+- **Auto-trigger**: Session or mission hits "missing tool" blocker
+- **Auto-trigger**: capability-gap-detector surfaces auto-buildable gap
+- **Manual trigger**: "find a tool for X", "I need an MCP for Y", "install tool Z"
+
+## Step 1 — Receive Provisioning Request
+
+Input format (from task blocker or capability-gap-detector):
+
+```json
+{
+  "requested_capability": "What do we need to do?",
+  "domain": "github | gmail | notion | figma | linear | custom | ...",
+  "required_operations": ["read", "search", "create", "update", "delete"],
+  "context": "Why we need this (task, workflow step, etc.)",
+  "urgency": "blocking | high | medium | low",
+  "auto_build_approved": true,
+  "preferred_transport": "http | stdio | sse",
+  "constraints": ["must work on Windows", "no GPL", "under 30min build time"]
+}
+```
+
+## Step 2 — Search Existing Solutions (Triage Ladder)
+
+Run the full `mcp-connection-triage` ladder. Do NOT skip steps.
+
+**Fast path (preferred):** run the unified multi-registry search, which queries
+Smithery + Glama + MCP Market + the official MCP Registry in one pass, and adds
+Pipedream + Composio when `-Exhaustive` is set:
+
+```powershell
+& "$env:USERPROFILE\.factory\bin\mcp-discovery.ps1" -Command recommend -Query "<domain>" -Exhaustive
+```
+
+Then provision the winner by source (idempotent; `-WhatIf` for dry-run):
+
+```powershell
+# http registries (smithery/glama/mcp_registry/mcp_market) -> Smithery toolbox
+& "$env:USERPROFILE\.factory\bin\mcp-discovery.ps1" -Command add -Source smithery -ServerUrl "<url>" -Id "<service>"
+# hosted smart hubs
+& "$env:USERPROFILE\.factory\bin\mcp-discovery.ps1" -Command add -Source composio
+& "$env:USERPROFILE\.factory\bin\mcp-discovery.ps1" -Command add -Source pipedream -QualifiedName "<app_slug>"
+```
+
+The manual per-registry steps below remain valid when you need to drill into one source.
+
+### Step 2a — Smithery Registry
+```bash
+smithery mcp search "<domain>"
+```
+If hosted server found:
+- Connect it: `smithery mcp add "<url>" --id "<service>"`
+- Verify tools: `smithery tool list "<service>"`
+- If tools cover required operations → DONE, update mcp.json
+
+### Step 2b — Glama Search
+Search `https://glama.ai/mcp/servers?query=<domain>`
+If a suitable server is listed:
+- Get connection details
+- Connect via appropriate transport
+- Verify tools → DONE if covered
+
+### Step 2c — MCP Market
+Search MCP Market API for the domain.
+If found:
+- Connect, verify tools → DONE if covered
+
+### Step 2d — Official MCP Registry
+Query `https://registry.modelcontextprotocol.io/v0/servers?search=<domain>` (no key).
+If a server with a `remotes[].url` is listed:
+- Connect via that URL (toolbox or mcp.json) → DONE if tools cover operations
+
+### Step 2e — Composio (Rube)
+Hosted universal hub (~1000+ toolkits, 20k+ tools). Check the toolkit catalog:
+`GET https://backend.composio.dev/api/v3.1/toolkits?search=<domain>` (`x-api-key`).
+If the toolkit exists:
+- Ensure `composio-rube` is connected (`mcp-discovery.ps1 -Command add -Source composio`)
+- At runtime call `RUBE_SEARCH_TOOLS` to hydrate only the needed tool slugs → DONE
+
+### Step 2f — Pipedream (app discovery)
+3000+ apps. Check `GET https://api.pipedream.com/v1/connect/apps?q=<domain>` (Bearer).
+If the app exists:
+- Provision `pipedream-all` (needs PIPEDREAM_PROJECT_ID/EXTERNAL_USER_ID/API_KEY in Doppler)
+- Pass the app via `x-pd-app-slug` → DONE
+
+### Step 2g — Smithery Broad Search
+If every source above is empty:
+- Run broad search with related terms (`mcp-discovery.ps1 ... -Exhaustive`)
+- Check adjacent domains (e.g., "google" for gmail, "git" for github)
+
+## Step 3 — Decision: Build or Escalate
+
+If no existing solution found:
+
+### Low-Risk Build (auto-build)
+Conditions:
+- Operations are read-only (search, list, get)
+- Domain has a well-documented public API
+- Build time estimate < 1 hour
+- No credential handling beyond standard OAuth
+
+Action: Proceed to Step 4 (auto-build) without asking.
+
+### Medium-Risk Build (one question)
+Conditions:
+- Operations include create/update
+- Domain has moderate API complexity
+- Build time estimate 1-4 hours
+
+Action: Ask ONE question:
+> "No existing MCP found for {domain}. I can build one on Cloudflare Workers in ~{estimate}. It would support: {operations}. Proceed?"
+
+### High-Risk Build (escalate fully)
+Conditions:
+- Operations include delete/destructive
+- Domain handles financial, medical, or legal data
+- Build time estimate > 4 hours
+
+Action: Escalate with full build plan, don't auto-build.
+
+### Skip Build
+Conditions:
+- Alternative approach exists (use Pipedream instead of custom MCP, use different tool)
+- Build not worth effort for one-time use
+
+Action: Report alternatives.
+
+## Step 4 — Auto-Build Custom MCP (Low-Risk)
+
+### 4a — Design
+1. Define tools: input/output schemas for each operation
+2. Choose transport: Streamable HTTP (POST) preferred for Cloudflare Workers
+3. Define auth: what credentials needed, from where (Doppler reference)
+
+### 4b — Implement
+1. Create Cloudflare Worker project:
+```bash
+npx wrangler init <service>-mcp --type javascript
+```
+2. Implement MCP server with tools for required operations
+3. Wire auth via Doppler secrets (never hardcode)
+4. Deploy: `npx wrangler deploy`
+
+### 4c — Connect
+1. Add to `~/.factory/mcp.json`:
+```json
+{
+  "<service>": {
+    "type": "http",
+    "url": "https://<service>-mcp.<worker>.workers.dev",
+    "headers": {
+      "Authorization": "Bearer {{doppler:project:config:secret_key}}"
+    }
+  }
+}
+```
+2. Verify: `smithery tool list <service>` or direct tool call
+3. Test: run a lightweight read operation
+
+### 4d — Register
+1. Add to mcp-routing.policy.json if applicable
+2. Notify capability-gap-detector: gap is closed
+3. Create a brief skill for the new MCP if usage pattern warrants it
+
+## Step 5 — Smoke Test
+
+Regardless of source (existing or custom-built):
+1. List available tools
+2. Call a lightweight read-only tool
+3. Verify response structure matches expectations
+4. If any failure: diagnose, retry, escalate if unfixable
+
+## Step 6 — Report
+
+```
+TOOL PROVISIONING REPORT
+========================
+Request: {requested_capability}
+Source: smithery | glama | mcp-market | custom-build
+Method: {step that succeeded}
+Time to provision: {duration}
+Tools available: [{tool names}]
+Connected as: {mcp server id}
+Next: {what to do with this tool in the task}
+```
+
+## Output Contract
+
+- Connected MCP server (added to mcp.json or Smithery connections)
+- Verified tools accessible
+- Provisioning report
+- If custom-built: deployed worker URL + source code location
+- If escalated: build plan for user approval
+
+## Guardrails
+
+- Never install tools from unverified sources without recycler vetting
+- Never auto-build tools that handle destructive operations
+- Never hardcode credentials in custom MCP code — always Doppler references
+- If build fails 3 times, escalate with what was tried and what failed
+- Custom MCPs must be idempotent (safe to deploy over existing)
+
+## Integration Points
+
+- **capability-gap-detector**: Primary source of provisioning requests
+- **mcp-connection-triage**: Triage ladder for finding existing solutions
+- **recycler**: Vet any OSS MCP servers before installing
+- **api-credential-acquisition**: Acquire credentials for new tools
+- **self-calibrating-autonomy**: Determines if auto-build is approved
+- **knowledge-distiller**: Records tool behavior quirks as facts

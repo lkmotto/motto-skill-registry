@@ -89,12 +89,12 @@
                                           "disabled":  false
                                       },
                        "hermes":  {
-                                      "url":  "http://100.108.199.10:18150",
+                                      "type":  "http",
+                                      "url":  "http://127.0.0.1:8150",
                                       "headers":  {
                                                       "Authorization":  "Bearer 0584b184ed9981a6b9acd7bbc65c44fb4e42f8c7acad24314fcf278b858202c0"
                                                   },
-                                      "disabled":  false,
-                                      "type":  "http"
+                                      "disabled":  false
                                   }
                    }
 }

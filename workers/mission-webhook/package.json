@@ -1,0 +1,6 @@
+{
+  "name": "mission-webhook",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitHub webhook receiver for autonomous mission dispatch"
+}

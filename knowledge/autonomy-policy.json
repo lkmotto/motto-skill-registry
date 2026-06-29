@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "policies": [],
+  "defaults": {
+    "maxAutoRisk": "medium",
+    "learnFromRejections": true,
+    "minApprovalRatio": 0.8
+  }
+}

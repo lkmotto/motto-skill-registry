@@ -1,0 +1,230 @@
+{
+  "version": 3,
+  "agent": "codex",
+  "inactivityHours": 24,
+  "hotset": [
+    "smithery-ai-cli",
+    "recycler",
+    "decision-log",
+    "knowledge-distiller",
+    "readiness-gate"
+  ],
+  "coldset": [
+    "cloudflare-deploy",
+    "cloudflare-browser",
+    "github-issues",
+    "notion-knowledge-capture",
+    "sentry-incident-runbook",
+    "vercel-deployment",
+    "netlify-deploy",
+    "session-postmortem",
+    "error-pattern-detector",
+    "credential-escrow",
+    "environment-drift-monitor",
+    "workflow-library",
+    "capability-gap-detector",
+    "self-calibrating-autonomy",
+    "tool-auto-provisioner"
+  ],
+  "intentMap": [
+    {
+      "matchAny": [
+        "cloudflare",
+        "workers",
+        "r2"
+      ],
+      "skills": [
+        "cloudflare-deploy",
+        "cloudflare-browser"
+      ]
+    },
+    {
+      "matchAny": [
+        "github issue",
+        "gh issue",
+        "issue triage"
+      ],
+      "skills": [
+        "github-issues"
+      ]
+    },
+    {
+      "matchAny": [
+        "vercel",
+        "deployment"
+      ],
+      "skills": [
+        "vercel-deployment"
+      ]
+    },
+    {
+      "matchAny": [
+        "netlify",
+        "publish site"
+      ],
+      "skills": [
+        "netlify-deploy"
+      ]
+    },
+    {
+      "matchAny": [
+        "notion",
+        "knowledge capture",
+        "wiki note"
+      ],
+      "skills": [
+        "notion-knowledge-capture"
+      ]
+    },
+    {
+      "matchAny": [
+        "sentry",
+        "incident"
+      ],
+      "skills": [
+        "sentry-incident-runbook"
+      ]
+    },
+    {
+      "matchAny": [
+        "postmortem",
+        "lessons learned",
+        "session review",
+        "capture learnings"
+      ],
+      "skills": [
+        "session-postmortem",
+        "decision-log",
+        "knowledge-distiller",
+        "error-pattern-detector",
+        "workflow-library"
+      ]
+    },
+    {
+      "matchAny": [
+        "credential",
+        "auth token",
+        "token expiry",
+        "rotate",
+        "auth health",
+        "grabber"
+      ],
+      "skills": [
+        "credential-escrow",
+        "api-credential-acquisition"
+      ]
+    },
+    {
+      "matchAny": [
+        "drift",
+        "probe",
+        "environment check",
+        "is it still working",
+        "verify surface"
+      ],
+      "skills": [
+        "environment-drift-monitor"
+      ]
+    },
+    {
+      "matchAny": [
+        "gap",
+        "missing capability",
+        "skill audit",
+        "what should I build",
+        "capability review"
+      ],
+      "skills": [
+        "capability-gap-detector"
+      ]
+    },
+    {
+      "matchAny": [
+        "autonomy",
+        "escalation",
+        "auto approve",
+        "calibrate",
+        "should this be automatic"
+      ],
+      "skills": [
+        "self-calibrating-autonomy"
+      ]
+    },
+    {
+      "matchAny": [
+        "readiness",
+        "pre flight",
+        "gate check",
+        "are we ready",
+        "pre mission"
+      ],
+      "skills": [
+        "readiness-gate",
+        "credential-escrow",
+        "environment-drift-monitor"
+      ]
+    },
+    {
+      "matchAny": [
+        "find tool",
+        "need mcp",
+        "provision",
+        "install tool",
+        "missing tool",
+        "get me a tool"
+      ],
+      "skills": [
+        "tool-auto-provisioner",
+        "mcp-connection-triage",
+        "smithery-ai-cli"
+      ]
+    },
+    {
+      "matchAny": [
+        "decision",
+        "why did we choose",
+        "log this choice",
+        "remember this decision"
+      ],
+      "skills": [
+        "decision-log"
+      ]
+    },
+    {
+      "matchAny": [
+        "workflow",
+        "template",
+        "pattern",
+        "save this process",
+        "make reusable"
+      ],
+      "skills": [
+        "workflow-library"
+      ]
+    },
+    {
+      "matchAny": [
+        "fact",
+        "remember that",
+        "note this",
+        "don't forget",
+        "knowledge"
+      ],
+      "skills": [
+        "knowledge-distiller"
+      ]
+    },
+    {
+      "matchAny": [
+        "error pattern",
+        "recurring failure",
+        "keeps failing",
+        "why does this break",
+        "fix permanently"
+      ],
+      "skills": [
+        "error-pattern-detector"
+      ]
+    }
+  ]
+}

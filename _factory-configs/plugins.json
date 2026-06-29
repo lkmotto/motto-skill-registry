@@ -1,0 +1,68 @@
+﻿{
+    "plugins":  {
+                    "droid-evolved@factory-plugins":  {
+                                                          "scope":  "user",
+                                                          "installPath":  "C:\\Users\\lkmot\\.factory\\plugins\\cache\\factory-plugins\\droid-evolved\\0c10b397a80c",
+                                                          "version":  "0c10b397a80c",
+                                                          "installedAt":  "2026-06-26T14:56:27.596Z",
+                                                          "lastUpdated":  "2026-06-26T14:56:27.596Z",
+                                                          "source":  "factory-plugins"
+                                                      },
+                    "autoresearch@factory-plugins":  {
+                                                         "scope":  "user",
+                                                         "installPath":  "C:\\Users\\lkmot\\.factory\\plugins\\cache\\factory-plugins\\autoresearch\\0c10b397a80c",
+                                                         "version":  "0c10b397a80c",
+                                                         "installedAt":  "2026-06-26T14:56:29.715Z",
+                                                         "lastUpdated":  "2026-06-26T14:56:29.715Z",
+                                                         "source":  "factory-plugins"
+                                                     },
+                    "security-engineer@factory-plugins":  {
+                                                              "scope":  "user",
+                                                              "installPath":  "C:\\Users\\lkmot\\.factory\\plugins\\cache\\factory-plugins\\security-engineer\\0c10b397a80c",
+                                                              "version":  "0c10b397a80c",
+                                                              "installedAt":  "2026-06-26T14:56:18.802Z",
+                                                              "lastUpdated":  "2026-06-26T14:56:18.802Z",
+                                                              "source":  "factory-plugins"
+                                                          },
+                    "typescript@factory-plugins":  {
+                                                       "scope":  "user",
+                                                       "installPath":  "C:\\Users\\lkmot\\.factory\\plugins\\cache\\factory-plugins\\typescript\\0c10b397a80c",
+                                                       "version":  "0c10b397a80c",
+                                                       "installedAt":  "2026-06-26T14:56:20.986Z",
+                                                       "lastUpdated":  "2026-06-26T14:56:20.986Z",
+                                                       "source":  "factory-plugins"
+                                                   },
+                    "debugging@factory-plugins":  {
+                                                      "scope":  "user",
+                                                      "installPath":  "C:\\Users\\lkmot\\.factory\\plugins\\cache\\factory-plugins\\debugging\\0c10b397a80c",
+                                                      "version":  "0c10b397a80c",
+                                                      "installedAt":  "2026-06-26T14:56:23.266Z",
+                                                      "lastUpdated":  "2026-06-26T14:56:23.266Z",
+                                                      "source":  "factory-plugins"
+                                                  },
+                    "core@factory-plugins":  {
+                                                 "scope":  "user",
+                                                 "installPath":  "C:\\Users\\lkmot\\.factory\\plugins\\cache\\factory-plugins\\core\\0c10b397a80c",
+                                                 "version":  "0c10b397a80c",
+                                                 "installedAt":  "2026-06-20T23:41:53.965Z",
+                                                 "lastUpdated":  "2026-06-20T23:41:53.965Z",
+                                                 "source":  "factory-plugins"
+                                             },
+                    "code-review@factory-plugins":  {
+                                                        "scope":  "user",
+                                                        "installPath":  "C:\\Users\\lkmot\\.factory\\plugins\\cache\\factory-plugins\\code-review\\0c10b397a80c",
+                                                        "version":  "0c10b397a80c",
+                                                        "installedAt":  "2026-06-26T14:56:25.416Z",
+                                                        "lastUpdated":  "2026-06-26T14:56:25.416Z",
+                                                        "source":  "factory-plugins"
+                                                    },
+                    "droid-control@factory-plugins":  {
+                                                          "scope":  "user",
+                                                          "installPath":  "C:\\Users\\lkmot\\.factory\\plugins\\cache\\factory-plugins\\droid-control\\0c10b397a80c",
+                                                          "version":  "0c10b397a80c",
+                                                          "installedAt":  "2026-06-20T23:41:54.409Z",
+                                                          "lastUpdated":  "2026-06-20T23:41:54.409Z",
+                                                          "source":  "factory-plugins"
+                                                      }
+                }
+}

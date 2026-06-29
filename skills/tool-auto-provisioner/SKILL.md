@@ -47,6 +47,26 @@ Input format (from task blocker or capability-gap-detector):
 
 Run the full `mcp-connection-triage` ladder. Do NOT skip steps.
 
+**Fast path (preferred):** run the unified multi-registry search, which queries
+Smithery + Glama + MCP Market + the official MCP Registry in one pass, and adds
+Pipedream + Composio when `-Exhaustive` is set:
+
+```powershell
+& "$env:USERPROFILE\.factory\bin\mcp-discovery.ps1" -Command recommend -Query "<domain>" -Exhaustive
+```
+
+Then provision the winner by source (idempotent; `-WhatIf` for dry-run):
+
+```powershell
+# http registries (smithery/glama/mcp_registry/mcp_market) -> Smithery toolbox
+& "$env:USERPROFILE\.factory\bin\mcp-discovery.ps1" -Command add -Source smithery -ServerUrl "<url>" -Id "<service>"
+# hosted smart hubs
+& "$env:USERPROFILE\.factory\bin\mcp-discovery.ps1" -Command add -Source composio
+& "$env:USERPROFILE\.factory\bin\mcp-discovery.ps1" -Command add -Source pipedream -QualifiedName "<app_slug>"
+```
+
+The manual per-registry steps below remain valid when you need to drill into one source.
+
 ### Step 2a — Smithery Registry
 ```bash
 smithery mcp search "<domain>"
@@ -68,9 +88,27 @@ Search MCP Market API for the domain.
 If found:
 - Connect, verify tools → DONE if covered
 
-### Step 2d — Smithery Broad Search
-If Smithery, Glama, and MCP Market all empty:
-- Run broad search with related terms
+### Step 2d — Official MCP Registry
+Query `https://registry.modelcontextprotocol.io/v0/servers?search=<domain>` (no key).
+If a server with a `remotes[].url` is listed:
+- Connect via that URL (toolbox or mcp.json) → DONE if tools cover operations
+
+### Step 2e — Composio (Rube)
+Hosted universal hub (~1000+ toolkits, 20k+ tools). Check the toolkit catalog:
+`GET https://backend.composio.dev/api/v3.1/toolkits?search=<domain>` (`x-api-key`).
+If the toolkit exists:
+- Ensure `composio-rube` is connected (`mcp-discovery.ps1 -Command add -Source composio`)
+- At runtime call `RUBE_SEARCH_TOOLS` to hydrate only the needed tool slugs → DONE
+
+### Step 2f — Pipedream (app discovery)
+3000+ apps. Check `GET https://api.pipedream.com/v1/connect/apps?q=<domain>` (Bearer).
+If the app exists:
+- Provision `pipedream-all` (needs PIPEDREAM_PROJECT_ID/EXTERNAL_USER_ID/API_KEY in Doppler)
+- Pass the app via `x-pd-app-slug` → DONE
+
+### Step 2g — Smithery Broad Search
+If every source above is empty:
+- Run broad search with related terms (`mcp-discovery.ps1 ... -Exhaustive`)
 - Check adjacent domains (e.g., "google" for gmail, "git" for github)
 
 ## Step 3 — Decision: Build or Escalate

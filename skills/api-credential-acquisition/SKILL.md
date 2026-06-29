@@ -9,10 +9,10 @@ Use this skill when the user asks to collect, rotate, or persist external API to
 
 ## Canonical implementation
 
-- Runner: `$MOTTO_SKILLS_HOME/tools/auth_runner.py`
+- Runner: `C:\Users\lkmot\tools\auth_runner.py`
 - Recipes:
-  - `$MOTTO_SKILLS_HOME/tools/auth_runner_recipes.sample.json`
-  - `$MOTTO_SKILLS_HOME/tools/auth_runner_recipes.live-test.json`
+  - `C:\Users\lkmot\tools\auth_runner_recipes.sample.json`
+  - `C:\Users\lkmot\tools\auth_runner_recipes.live-test.json`
 
 ## Standard recipe contract
 
@@ -47,5 +47,5 @@ This prevents rebuilding auth plumbing every session and keeps runs focused on t
 ## Validation command
 
 ```powershell
-python $MOTTO_SKILLS_HOME/tools/auth_runner.py --recipes $MOTTO_SKILLS_HOME/tools/auth_runner_recipes.live-test.json --service <service-name> --live
+python C:\Users\lkmot\tools\auth_runner.py --recipes C:\Users\lkmot\tools\auth_runner_recipes.live-test.json --service <service-name> --live
 ```

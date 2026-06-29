@@ -30,8 +30,8 @@ Use this before implementation work across repositories.
 
 ## Local awareness index (cross-session anchor)
 
-- Refresh script: `python $MOTTO_SKILLS_HOME/tools/github_awareness_refresh.py --owner lkmotto`
-- Output index: `$MOTTO_SKILLS_HOME/tools/github_awareness_index.json`
+- Refresh script: `python C:\Users\lkmot\tools\github_awareness_refresh.py --owner lkmotto`
+- Output index: `C:\Users\lkmot\tools\github_awareness_index.json`
 - Use this index first to identify repo stacks and existing modules before opening files.
 
 ## Policy

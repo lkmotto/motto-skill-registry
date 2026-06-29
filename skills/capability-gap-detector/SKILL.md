@@ -122,7 +122,7 @@ HIGH (2)
 1. appraisal-pdf-parser: Skill for extracting structured data from appraisal PDFs
    Evidence: 4 missions, 12+ manual extractions
    Effort: ~2h, Auto-buildable: yes (pdfplumber + pydantic schema)
-   
+
 2. ntreis-session-health-check: Probe for NTREIS session freshness
    Evidence: 3 auth failures due to stale sessions
    Effort: ~30min, Auto-buildable: yes (add to drift-monitor probes)

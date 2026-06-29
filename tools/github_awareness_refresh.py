@@ -60,7 +60,10 @@ def parse_tool_payload(stdout: str) -> Any:
 
 
 def tool_call(connection_id: str, tool_name: str, args: Dict[str, Any]) -> Any:
-    cp = run([SMITHERY_BIN, "tool", "call", connection_id, tool_name, json.dumps(args)], timeout=240)
+    cp = run(
+        [SMITHERY_BIN, "tool", "call", connection_id, tool_name, json.dumps(args)],
+        timeout=240,
+    )
     if cp.returncode != 0:
         raise RuntimeError((cp.stderr or cp.stdout).strip())
     outer = parse_json_or_none(cp.stdout) or {}
@@ -117,9 +120,17 @@ def refresh_awareness(owner: str) -> Dict[str, Any]:
         if not full_name or not name:
             continue
         try:
-            tree = tool_call("github", "get_repository_tree", {"owner": owner, "repo": name, "recursive": False})
+            tree = tool_call(
+                "github",
+                "get_repository_tree",
+                {"owner": owner, "repo": name, "recursive": False},
+            )
             nodes = tree.get("tree", []) if isinstance(tree, dict) else []
-            root_paths = [n.get("path") for n in nodes if isinstance(n, dict) and isinstance(n.get("path"), str)]
+            root_paths = [
+                n.get("path")
+                for n in nodes
+                if isinstance(n, dict) and isinstance(n.get("path"), str)
+            ]
         except Exception:
             root_paths = []
         repos.append(
@@ -151,8 +162,12 @@ def refresh_awareness(owner: str) -> Dict[str, Any]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Refresh GitHub code awareness index for agent reuse.")
-    parser.add_argument("--owner", default="lkmotto", help="GitHub owner/org (default: lkmotto)")
+    parser = argparse.ArgumentParser(
+        description="Refresh GitHub code awareness index for agent reuse."
+    )
+    parser.add_argument(
+        "--owner", default="lkmotto", help="GitHub owner/org (default: lkmotto)"
+    )
     parser.add_argument(
         "--out",
         default=r"C:\Users\lkmot\tools\github_awareness_index.json",

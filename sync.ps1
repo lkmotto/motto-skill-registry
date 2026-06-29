@@ -39,23 +39,23 @@ function Merge-JsonArrays($repoFile, $localFile) {
   # Union two JSON files that contain array properties keyed by id
   if (-not (Test-Path $repoFile)) { return Get-Content $localFile -Raw }
   if (-not (Test-Path $localFile)) { return Get-Content $repoFile -Raw }
-  
+
   try {
     $repo = Get-Content $repoFile -Raw | ConvertFrom-Json
     $local = Get-Content $localFile -Raw | ConvertFrom-Json
-    
+
     # For each array property, merge by id
     $result = $local | ConvertTo-Json -Depth 10 | ConvertFrom-Json
     $repoProps = $repo.PSObject.Properties
     $localProps = $local.PSObject.Properties
-    
+
     foreach ($prop in $repoProps) {
       $name = $prop.Name
       if ($name -eq "version") { continue }
-      
+
       $repoVal = $prop.Value
       $localVal = $local.$name
-      
+
       if ($repoVal -is [array] -and $localVal -is [array]) {
         $localIds = @{}
         foreach ($item in $localVal) {
@@ -72,7 +72,7 @@ function Merge-JsonArrays($repoFile, $localFile) {
         $result.$name = $localVal
       }
     }
-    
+
     return ($result | ConvertTo-Json -Depth 10)
   } catch {
     Write-Warning "Merge failed for $localFile — using local copy"
@@ -83,10 +83,10 @@ function Merge-JsonArrays($repoFile, $localFile) {
 function Merge-Jsonl($repoFile, $localFile) {
   # Concatenate both JSONL files, dedupe by entry id
   if (-not (Test-Path $repoFile) -and -not (Test-Path $localFile)) { return "" }
-  
+
   $seen = @{}
   $lines = @()
-  
+
   if (Test-Path $repoFile) {
     foreach ($line in (Get-Content $repoFile)) {
       if ($line.Trim() -eq "") { continue }
@@ -103,17 +103,17 @@ function Merge-Jsonl($repoFile, $localFile) {
       if (-not $seen.ContainsKey($id)) { $seen[$id] = $true; $lines += $line }
     }
   }
-  
+
   return ($lines -join "`n")
 }
 
 function Push-Knowledge {
   Write-Host "Pushing local knowledge to repo..."
-  
+
   # 1. Pull latest first to avoid conflicts
   Set-Location $REPO_PATH
   git pull --rebase 2>$null
-  
+
   # 2. Copy local knowledge files into repo
   foreach ($file in $MERGEABLE_FILES) {
     Copy-Item -Force "$KNOWLEDGE_LOCAL\$file" "$KNOWLEDGE_REPO\$file"
@@ -127,7 +127,7 @@ function Push-Knowledge {
       Copy-Item -Force "$KNOWLEDGE_LOCAL\$file" "$KNOWLEDGE_REPO\$file"
     }
   }
-  
+
   # 3. Commit and push if changes
   Set-Location $REPO_PATH
   git add knowledge/
@@ -145,11 +145,11 @@ function Push-Knowledge {
 
 function Pull-Knowledge {
   Write-Host "Pulling shared knowledge from repo..."
-  
+
   # 1. Pull latest
   Set-Location $REPO_PATH
   git pull --rebase
-  
+
   # 2. Merge repo knowledge into local
   foreach ($file in $MERGEABLE_FILES) {
     if (Test-Path "$KNOWLEDGE_REPO\$file") {
@@ -175,7 +175,7 @@ function Pull-Knowledge {
       Write-Host "  Created $file from repo"
     }
   }
-  
+
   Write-Host "Knowledge pulled from repo"
 }
 

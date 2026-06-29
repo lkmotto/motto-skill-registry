@@ -38,7 +38,9 @@ SMITHERY_BIN = resolve_bin(
         r"C:\Users\lkmot\AppData\Roaming\npm\smithery",
     ],
 )
-DOPPLER_BIN = resolve_bin("doppler", [r"C:\Users\lkmot\AppData\Local\Programs\doppler\doppler.exe"])
+DOPPLER_BIN = resolve_bin(
+    "doppler", [r"C:\Users\lkmot\AppData\Local\Programs\doppler\doppler.exe"]
+)
 BW_BIN = resolve_bin(
     "bw",
     [
@@ -53,7 +55,9 @@ NETLIFY_BIN = resolve_bin(
         r"C:\Users\lkmot\AppData\Roaming\npm\netlify.ps1",
     ],
 )
-NETLIFY_DEFAULT_CLIENT_ID = "d6f37de6614df7ae58664cfca524744d73807a377f5ee71f1a254f78412e3750"
+NETLIFY_DEFAULT_CLIENT_ID = (
+    "d6f37de6614df7ae58664cfca524744d73807a377f5ee71f1a254f78412e3750"
+)
 
 
 def run_cmd(args: List[str], timeout: int = 60) -> subprocess.CompletedProcess:
@@ -120,7 +124,12 @@ def bitwarden_get_item_by_name(name: str) -> Optional[dict]:
     arr = parse_json_or_none(cp.stdout)
     if not isinstance(arr, list):
         return None
-    exact = [x for x in arr if isinstance(x, dict) and str(x.get("name", "")).strip().lower() == name.strip().lower()]
+    exact = [
+        x
+        for x in arr
+        if isinstance(x, dict)
+        and str(x.get("name", "")).strip().lower() == name.strip().lower()
+    ]
     if exact:
         return exact[0]
     return arr[0] if arr else None
@@ -145,7 +154,9 @@ def bitwarden_extract_field(item: dict, field: str) -> Optional[str]:
             v = login.get("password")
             return str(v) if v else None
         if low == "totp":
-            cp = run_cmd([BW_BIN, "get", "totp", item.get("id", ""), "--raw"], timeout=30)
+            cp = run_cmd(
+                [BW_BIN, "get", "totp", item.get("id", ""), "--raw"], timeout=30
+            )
             if cp.returncode == 0:
                 t = cp.stdout.strip()
                 return t if t else None
@@ -223,13 +234,23 @@ class SmitheryAdapter:
     def get_connection(self, connection_id: str) -> dict:
         cp = self._run(["mcp", "get", connection_id], timeout=60)
         if cp.returncode != 0:
-            raise RuntimeError(f"smithery mcp get failed for {connection_id}: {cp.stderr.strip()}")
+            raise RuntimeError(
+                f"smithery mcp get failed for {connection_id}: {cp.stderr.strip()}"
+            )
         payload = parse_json_or_none(cp.stdout)
         if not isinstance(payload, dict):
-            raise RuntimeError(f"Unable to parse connection payload for {connection_id}")
+            raise RuntimeError(
+                f"Unable to parse connection payload for {connection_id}"
+            )
         return payload
 
-    def add_connection(self, connection_id: str, mcp_url: str, force: bool = False, headers: Optional[dict] = None) -> None:
+    def add_connection(
+        self,
+        connection_id: str,
+        mcp_url: str,
+        force: bool = False,
+        headers: Optional[dict] = None,
+    ) -> None:
         args = ["mcp", "add", mcp_url, "--id", connection_id]
         if force:
             args.append("--force")
@@ -240,7 +261,9 @@ class SmitheryAdapter:
             return
         cp = self._run(args, timeout=120)
         if cp.returncode != 0:
-            raise RuntimeError(f"smithery mcp add failed for {connection_id}: {cp.stderr.strip()}")
+            raise RuntimeError(
+                f"smithery mcp add failed for {connection_id}: {cp.stderr.strip()}"
+            )
 
     def remove_connection(self, connection_id: str) -> None:
         args = ["mcp", "remove", connection_id]
@@ -249,20 +272,28 @@ class SmitheryAdapter:
             return
         cp = self._run(args, timeout=60)
         if cp.returncode != 0:
-            raise RuntimeError(f"smithery mcp remove failed for {connection_id}: {cp.stderr.strip()}")
+            raise RuntimeError(
+                f"smithery mcp remove failed for {connection_id}: {cp.stderr.strip()}"
+            )
 
     def update_headers(self, connection_id: str, headers: dict) -> None:
         args = ["mcp", "update", connection_id, "--headers", json.dumps(headers)]
         if self.ctx.dry_run:
             redacted = {k: "***" for k in headers}
-            self.ctx.log(f"[dry-run] smithery mcp update {connection_id} --headers {json.dumps(redacted)}")
+            self.ctx.log(
+                f"[dry-run] smithery mcp update {connection_id} --headers {json.dumps(redacted)}"
+            )
             return
         cp = self._run(args, timeout=60)
         if cp.returncode != 0:
-            raise RuntimeError(f"smithery mcp update headers failed for {connection_id}: {cp.stderr.strip()}")
+            raise RuntimeError(
+                f"smithery mcp update headers failed for {connection_id}: {cp.stderr.strip()}"
+            )
 
     def is_authorized_for_tools(self, connection_id: str) -> Tuple[bool, str]:
-        cp = self._run(["tool", "list", connection_id, "--flat", "--limit", "1"], timeout=60)
+        cp = self._run(
+            ["tool", "list", connection_id, "--flat", "--limit", "1"], timeout=60
+        )
         combined = (cp.stdout or "") + "\n" + (cp.stderr or "")
         txt = combined.lower()
         if cp.returncode != 0:
@@ -271,12 +302,23 @@ class SmitheryAdapter:
             return False, combined.strip()
         return True, combined.strip()
 
-    def tool_call(self, connection_id: str, tool_name: str, args: Optional[dict] = None, timeout: int = 120) -> Any:
+    def tool_call(
+        self,
+        connection_id: str,
+        tool_name: str,
+        args: Optional[dict] = None,
+        timeout: int = 120,
+    ) -> Any:
         payload = args or {}
-        cp = self._run(["tool", "call", connection_id, tool_name, json.dumps(payload)], timeout=timeout)
+        cp = self._run(
+            ["tool", "call", connection_id, tool_name, json.dumps(payload)],
+            timeout=timeout,
+        )
         if cp.returncode != 0:
             msg = (cp.stderr or cp.stdout or "").strip()
-            raise RuntimeError(f"smithery tool call failed {connection_id}.{tool_name}: {msg}")
+            raise RuntimeError(
+                f"smithery tool call failed {connection_id}.{tool_name}: {msg}"
+            )
         outer = parse_json_or_none(cp.stdout) or {}
         if isinstance(outer, dict) and outer.get("isError"):
             raise RuntimeError(f"{connection_id}.{tool_name} returned error: {outer}")
@@ -288,7 +330,9 @@ class SmitheryAdapter:
             return
         opened = webbrowser.open(setup_url)
         if not opened:
-            self.ctx.log(f"[warn] Could not auto-open browser. Visit manually: {setup_url}")
+            self.ctx.log(
+                f"[warn] Could not auto-open browser. Visit manually: {setup_url}"
+            )
 
     def poll_until_state_change(
         self,
@@ -427,11 +471,15 @@ class DopplerAdapter:
             "--no-interactive",
         ]
         if self.ctx.dry_run:
-            self.ctx.log(f"[dry-run] doppler secrets set {key} *** --project {project} --config {config}")
+            self.ctx.log(
+                f"[dry-run] doppler secrets set {key} *** --project {project} --config {config}"
+            )
             return
         cp = run_cmd(args, timeout=60)
         if cp.returncode != 0:
-            raise RuntimeError(f"doppler secrets set failed for {key}: {cp.stderr.strip()}")
+            raise RuntimeError(
+                f"doppler secrets set failed for {key}: {cp.stderr.strip()}"
+            )
         self.ctx.debug(cp.stdout.strip())
 
 
@@ -443,7 +491,9 @@ def rewrite_url_with_query_params(url: str, params: Dict[str, str]) -> str:
     return urlunparse(updated)
 
 
-def resolve_value(value_expr: str, recipe: dict, runtime_values: Optional[dict] = None) -> Optional[str]:
+def resolve_value(
+    value_expr: str, recipe: dict, runtime_values: Optional[dict] = None
+) -> Optional[str]:
     if value_expr is None:
         return None
     if value_expr.startswith("env:"):
@@ -457,7 +507,17 @@ def resolve_value(value_expr: str, recipe: dict, runtime_values: Optional[dict] 
             return None
         _, project, config, key = parts
         cp = run_cmd(
-            [DOPPLER_BIN, "secrets", "get", key, "--project", project, "--config", config, "--plain"],
+            [
+                DOPPLER_BIN,
+                "secrets",
+                "get",
+                key,
+                "--project",
+                project,
+                "--config",
+                config,
+                "--plain",
+            ],
             timeout=60,
         )
         if cp.returncode != 0:
@@ -502,7 +562,13 @@ def get_setup_url(status: dict) -> Optional[str]:
     return status.get("setupUrl") or status.get("authorizationUrl")
 
 
-def apply_input_required(recipe: dict, conn: dict, smithery: SmitheryAdapter, ctx: RunnerContext, runtime_values: Optional[dict] = None) -> None:
+def apply_input_required(
+    recipe: dict,
+    conn: dict,
+    smithery: SmitheryAdapter,
+    ctx: RunnerContext,
+    runtime_values: Optional[dict] = None,
+) -> None:
     status = conn.get("status") or {}
     missing = status.get("missing") or {}
     input_values = recipe.get("input_values") or {}
@@ -512,43 +578,63 @@ def apply_input_required(recipe: dict, conn: dict, smithery: SmitheryAdapter, ct
 
     if missing_headers:
         header_map = {}
-        provided = (input_values.get("headers") or {})
+        provided = input_values.get("headers") or {}
         for h in missing_headers:
-            v = resolve_value(str(provided.get(h, "")), recipe, runtime_values=runtime_values)
+            v = resolve_value(
+                str(provided.get(h, "")), recipe, runtime_values=runtime_values
+            )
             if not v:
                 if ctx.dry_run:
-                    ctx.log(f"[dry-run] missing header value for '{h}', using placeholder")
+                    ctx.log(
+                        f"[dry-run] missing header value for '{h}', using placeholder"
+                    )
                     v = "REQUIRED_VALUE"
                 else:
-                    raise RuntimeError(f"Missing header value for input_required header '{h}'")
+                    raise RuntimeError(
+                        f"Missing header value for input_required header '{h}'"
+                    )
             header_map[h] = v
         smithery.update_headers(recipe["connection_id"], header_map)
 
     if missing_query:
-        provided_q = (input_values.get("query") or {})
+        provided_q = input_values.get("query") or {}
         q_map = {}
         for q in missing_query:
-            v = resolve_value(str(provided_q.get(q, "")), recipe, runtime_values=runtime_values)
+            v = resolve_value(
+                str(provided_q.get(q, "")), recipe, runtime_values=runtime_values
+            )
             if not v:
                 if ctx.dry_run:
-                    ctx.log(f"[dry-run] missing query value for '{q}', using placeholder")
+                    ctx.log(
+                        f"[dry-run] missing query value for '{q}', using placeholder"
+                    )
                     v = "REQUIRED_VALUE"
                 else:
-                    raise RuntimeError(f"Missing query value for input_required query '{q}'")
+                    raise RuntimeError(
+                        f"Missing query value for input_required query '{q}'"
+                    )
             q_map[q] = v
         current_url = conn.get("mcpUrl")
         if not current_url:
-            raise RuntimeError("Connection missing mcpUrl while handling input_required query fields.")
+            raise RuntimeError(
+                "Connection missing mcpUrl while handling input_required query fields."
+            )
         rewritten = rewrite_url_with_query_params(current_url, q_map)
-        ctx.log(f"[info] Rebuilding connection URL with required query params for {recipe['connection_id']}")
+        ctx.log(
+            f"[info] Rebuilding connection URL with required query params for {recipe['connection_id']}"
+        )
         smithery.remove_connection(recipe["connection_id"])
         smithery.add_connection(recipe["connection_id"], rewritten, force=True)
 
 
-def resolve_doppler_value(recipe: dict, otp_result: Optional[dict], runtime_values: Optional[dict] = None) -> Optional[str]:
+def resolve_doppler_value(
+    recipe: dict, otp_result: Optional[dict], runtime_values: Optional[dict] = None
+) -> Optional[str]:
     doppler_cfg = recipe.get("doppler") or {}
     if "value" in doppler_cfg and isinstance(doppler_cfg["value"], str):
-        return resolve_value(doppler_cfg["value"], recipe, runtime_values=runtime_values)
+        return resolve_value(
+            doppler_cfg["value"], recipe, runtime_values=runtime_values
+        )
     value_env = doppler_cfg.get("value_env")
     if isinstance(value_env, str) and value_env:
         return os.getenv(value_env)
@@ -574,7 +660,11 @@ def find_key_like_values(obj: Any, path: str = "") -> List[Tuple[str, str]]:
     if isinstance(obj, str):
         s = obj.strip()
         p = path.lower()
-        if len(s) >= 20 and ("key" in p or "token" in p or s.startswith(("sk_", "pk_", "cmp_", "cp_", "api_"))):
+        if len(s) >= 20 and (
+            "key" in p
+            or "token" in p
+            or s.startswith(("sk_", "pk_", "cmp_", "cp_", "api_"))
+        ):
             out.append((path, s))
     return out
 
@@ -606,7 +696,10 @@ def load_netlify_seed_token() -> Optional[str]:
 
 
 def netlify_api_call(method_name: str, payload: dict, timeout: int = 120) -> Any:
-    cp = run_cmd([NETLIFY_BIN, "api", method_name, "--data", json.dumps(payload)], timeout=timeout)
+    cp = run_cmd(
+        [NETLIFY_BIN, "api", method_name, "--data", json.dumps(payload)],
+        timeout=timeout,
+    )
     if cp.returncode != 0:
         msg = (cp.stderr or cp.stdout).strip()
         raise RuntimeError(f"netlify api {method_name} failed: {msg}")
@@ -629,12 +722,16 @@ def netlify_authorize_ticket(ticket_id: str, seed_token: str) -> None:
     try:
         with urlopen(req, timeout=30) as resp:
             if getattr(resp, "status", 200) not in (200, 201, 204):
-                raise RuntimeError(f"ticket authorize returned status {getattr(resp, 'status', 'unknown')}")
+                raise RuntimeError(
+                    f"ticket authorize returned status {getattr(resp, 'status', 'unknown')}"
+                )
     except Exception as e:
         raise RuntimeError(f"netlify ticket authorize failed: {e}") from e
 
 
-def collect_composio_project_api_key(smithery: SmitheryAdapter, connection_id: str) -> dict:
+def collect_composio_project_api_key(
+    smithery: SmitheryAdapter, connection_id: str
+) -> dict:
     mode = "project_api_key_regenerate"
     provider = "composio"
 
@@ -665,7 +762,12 @@ def collect_composio_project_api_key(smithery: SmitheryAdapter, connection_id: s
     candidates = find_key_like_values(rotated)
     if not candidates:
         raise RuntimeError(f"{provider}.{mode}: no key-like value in rotate response")
-    candidates.sort(key=lambda x: (0 if ("api" in x[0].lower() and "key" in x[0].lower()) else 1, len(x[1])))
+    candidates.sort(
+        key=lambda x: (
+            0 if ("api" in x[0].lower() and "key" in x[0].lower()) else 1,
+            len(x[1]),
+        )
+    )
     key_path, key_value = candidates[0]
     return {
         "provider": provider,
@@ -679,7 +781,9 @@ def collect_composio_project_api_key(smithery: SmitheryAdapter, connection_id: s
     }
 
 
-def collect_netlify_oauth_ticket_token(recipe: dict, runtime_values: Optional[dict] = None) -> dict:
+def collect_netlify_oauth_ticket_token(
+    recipe: dict, runtime_values: Optional[dict] = None
+) -> dict:
     acq = recipe.get("acquisition") or {}
     params = acq.get("params") if isinstance(acq.get("params"), dict) else {}
     provider = "netlify"
@@ -690,15 +794,23 @@ def collect_netlify_oauth_ticket_token(recipe: dict, runtime_values: Optional[di
     seed_token_expr = params.get("seed_token")
     seed_token = None
     if isinstance(seed_token_expr, str) and seed_token_expr.strip():
-        seed_token = resolve_value(seed_token_expr.strip(), recipe, runtime_values=runtime_values)
+        seed_token = resolve_value(
+            seed_token_expr.strip(), recipe, runtime_values=runtime_values
+        )
     if not seed_token:
         seed_token = load_netlify_seed_token()
     if not seed_token:
-        raise RuntimeError(f"{provider}.{mode}: missing seed token source (configure acquisition.params.seed_token or local netlify login)")
+        raise RuntimeError(
+            f"{provider}.{mode}: missing seed token source (configure acquisition.params.seed_token or local netlify login)"
+        )
 
-    created = netlify_api_call("createTicket", {"client_id": client_id, "message": message})
+    created = netlify_api_call(
+        "createTicket", {"client_id": client_id, "message": message}
+    )
     if not isinstance(created, dict):
-        raise RuntimeError(f"{provider}.{mode}: createTicket returned non-object payload")
+        raise RuntimeError(
+            f"{provider}.{mode}: createTicket returned non-object payload"
+        )
     ticket_id = created.get("id")
     if not isinstance(ticket_id, str) or not ticket_id:
         raise RuntimeError(f"{provider}.{mode}: createTicket did not return ticket id")
@@ -706,10 +818,18 @@ def collect_netlify_oauth_ticket_token(recipe: dict, runtime_values: Optional[di
     netlify_authorize_ticket(ticket_id, seed_token)
     exchanged = netlify_api_call("exchangeTicket", {"ticket_id": ticket_id})
     if not isinstance(exchanged, dict):
-        raise RuntimeError(f"{provider}.{mode}: exchangeTicket returned non-object payload")
-    token = exchanged.get("access_token") or exchanged.get("token") or exchanged.get("accessToken")
+        raise RuntimeError(
+            f"{provider}.{mode}: exchangeTicket returned non-object payload"
+        )
+    token = (
+        exchanged.get("access_token")
+        or exchanged.get("token")
+        or exchanged.get("accessToken")
+    )
     if not isinstance(token, str) or not token:
-        raise RuntimeError(f"{provider}.{mode}: exchangeTicket did not return access token")
+        raise RuntimeError(
+            f"{provider}.{mode}: exchangeTicket did not return access token"
+        )
 
     return {
         "provider": provider,
@@ -737,21 +857,35 @@ def get_acquisition_config(recipe: dict) -> dict:
     return {}
 
 
-def run_acquisition(recipe: dict, smithery: SmitheryAdapter, connection_id: str, runtime_values: Optional[dict] = None) -> dict:
+def run_acquisition(
+    recipe: dict,
+    smithery: SmitheryAdapter,
+    connection_id: str,
+    runtime_values: Optional[dict] = None,
+) -> dict:
     acq = get_acquisition_config(recipe)
     if not acq:
         return {}
     provider = str(acq.get("provider", "")).strip().lower()
     mode = str(acq.get("mode", "")).strip().lower()
 
-    if provider == "composio" and mode in ("project_api_key_regenerate", "regenerate_api_key"):
+    if provider == "composio" and mode in (
+        "project_api_key_regenerate",
+        "regenerate_api_key",
+    ):
         return collect_composio_project_api_key(smithery, connection_id)
     if provider == "netlify" and mode in ("oauth_ticket_exchange", "ticket_exchange"):
         return collect_netlify_oauth_ticket_token(recipe, runtime_values=runtime_values)
     raise RuntimeError(f"Unsupported acquisition provider/mode: {provider}/{mode}")
 
 
-def run_service_recipe(recipe: dict, ctx: RunnerContext, smithery: SmitheryAdapter, gmail: GmailAdapter, doppler: DopplerAdapter) -> Tuple[bool, str]:
+def run_service_recipe(
+    recipe: dict,
+    ctx: RunnerContext,
+    smithery: SmitheryAdapter,
+    gmail: GmailAdapter,
+    doppler: DopplerAdapter,
+) -> Tuple[bool, str]:
     service_name = recipe.get("name") or recipe.get("connection_id")
     connection_id = recipe["connection_id"]
     mcp_url = recipe.get("mcp_url")
@@ -759,7 +893,8 @@ def run_service_recipe(recipe: dict, ctx: RunnerContext, smithery: SmitheryAdapt
     poll_interval = int(recipe.get("auth", {}).get("poll_interval_sec", 4))
     acq_cfg = get_acquisition_config(recipe)
     requires_connected_connection = not (
-        isinstance(acq_cfg, dict) and acq_cfg.get("requires_connected_connection") is False
+        isinstance(acq_cfg, dict)
+        and acq_cfg.get("requires_connected_connection") is False
     )
 
     ctx.log(f"\n=== [{service_name}] start @ {now_utc_iso()} ===")
@@ -786,7 +921,7 @@ def run_service_recipe(recipe: dict, ctx: RunnerContext, smithery: SmitheryAdapt
     simulated_nonconnected = False
     while loop_guard < 12:
         loop_guard += 1
-        status = (conn.get("status") or {})
+        status = conn.get("status") or {}
         state = status.get("state")
         ctx.log(f"[state] {connection_id}: {state}")
 
@@ -808,7 +943,9 @@ def run_service_recipe(recipe: dict, ctx: RunnerContext, smithery: SmitheryAdapt
             if gmail_conn:
                 messages = gmail.fetch_messages(
                     gmail_connection_id=gmail_conn,
-                    query=gmail_cfg.get("query", "subject:(verification OR code OR otp) newer_than:1d"),
+                    query=gmail_cfg.get(
+                        "query", "subject:(verification OR code OR otp) newer_than:1d"
+                    ),
                     max_results=int(gmail_cfg.get("max_results", 10)),
                     verbose=False,
                 )
@@ -820,7 +957,9 @@ def run_service_recipe(recipe: dict, ctx: RunnerContext, smithery: SmitheryAdapt
                 if otp_result:
                     code = otp_result.get("code")
                     link = otp_result.get("link")
-                    ctx.log(f"[otp] found from {otp_result.get('sender')}: code={code if code else '-'} link={'yes' if link else 'no'}")
+                    ctx.log(
+                        f"[otp] found from {otp_result.get('sender')}: code={code if code else '-'} link={'yes' if link else 'no'}"
+                    )
 
             conn = smithery.poll_until_state_change(
                 connection_id=connection_id,
@@ -831,7 +970,9 @@ def run_service_recipe(recipe: dict, ctx: RunnerContext, smithery: SmitheryAdapt
             continue
 
         if state == "input_required":
-            apply_input_required(recipe, conn, smithery, ctx, runtime_values=runtime_values)
+            apply_input_required(
+                recipe, conn, smithery, ctx, runtime_values=runtime_values
+            )
             if ctx.dry_run:
                 ctx.log("[dry-run] simulated input_required flow complete")
                 simulated_nonconnected = True
@@ -846,32 +987,52 @@ def run_service_recipe(recipe: dict, ctx: RunnerContext, smithery: SmitheryAdapt
         time.sleep(max(poll_interval, 2))
 
     final_state = (conn.get("status") or {}).get("state")
-    if final_state != "connected" and not (ctx.dry_run and simulated_nonconnected) and requires_connected_connection:
+    if (
+        final_state != "connected"
+        and not (ctx.dry_run and simulated_nonconnected)
+        and requires_connected_connection
+    ):
         return False, f"{connection_id}: did not reach connected (final={final_state})"
     if final_state != "connected" and not requires_connected_connection:
-        ctx.log(f"[warn] proceeding without connected state for {connection_id} (final={final_state})")
+        ctx.log(
+            f"[warn] proceeding without connected state for {connection_id} (final={final_state})"
+        )
 
     if not ctx.dry_run:
         if requires_connected_connection:
             authorized, auth_msg = smithery.is_authorized_for_tools(connection_id)
             if not authorized:
-                return False, f"{connection_id}: connected state but not authorized for tools ({auth_msg})"
+                return (
+                    False,
+                    f"{connection_id}: connected state but not authorized for tools ({auth_msg})",
+                )
             auth_probe_tool = recipe.get("auth_probe_tool")
             if isinstance(auth_probe_tool, str) and auth_probe_tool.strip():
                 try:
                     smithery.tool_call(connection_id, auth_probe_tool.strip(), {})
                 except Exception as e:
-                    return False, f"{connection_id}: connected state but auth probe failed ({e})"
+                    return (
+                        False,
+                        f"{connection_id}: connected state but auth probe failed ({e})",
+                    )
         if acq_cfg:
-            collected = run_acquisition(recipe, smithery, connection_id, runtime_values=runtime_values)
+            collected = run_acquisition(
+                recipe, smithery, connection_id, runtime_values=runtime_values
+            )
             value = collected.get("value")
             if isinstance(value, str) and value:
                 runtime_values["key"] = value  # legacy alias for collector:key
                 runtime_values["acquisition.value"] = value
-                runtime_values["acquisition.provider"] = str(collected.get("provider") or "")
+                runtime_values["acquisition.provider"] = str(
+                    collected.get("provider") or ""
+                )
                 runtime_values["acquisition.mode"] = str(collected.get("mode") or "")
                 runtime_values["acquisition.path"] = str(collected.get("path") or "")
-                meta = collected.get("meta") if isinstance(collected.get("meta"), dict) else {}
+                meta = (
+                    collected.get("meta")
+                    if isinstance(collected.get("meta"), dict)
+                    else {}
+                )
                 for mk, mv in meta.items():
                     runtime_values[f"acquisition.meta.{mk}"] = str(mv)
                 ctx.log(
@@ -885,9 +1046,13 @@ def run_service_recipe(recipe: dict, ctx: RunnerContext, smithery: SmitheryAdapt
         config = doppler_cfg.get("config")
         secret_key = doppler_cfg.get("secret_key")
         if project and config and secret_key:
-            value = resolve_doppler_value(recipe, otp_result, runtime_values=runtime_values)
+            value = resolve_doppler_value(
+                recipe, otp_result, runtime_values=runtime_values
+            )
             if value:
-                doppler.set_secret(project=project, config=config, key=secret_key, value=value)
+                doppler.set_secret(
+                    project=project, config=config, key=secret_key, value=value
+                )
                 ctx.log(f"[doppler] upserted {secret_key} in {project}/{config}")
             else:
                 ctx.log(f"[doppler] skipped {secret_key}: no resolved value source")
@@ -908,10 +1073,18 @@ def load_recipes(path: str) -> List[dict]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="API-first Auth Runner (Smithery + Gmail + Doppler)")
+    parser = argparse.ArgumentParser(
+        description="API-first Auth Runner (Smithery + Gmail + Doppler)"
+    )
     parser.add_argument("--recipes", required=True, help="Path to recipe JSON file")
-    parser.add_argument("--service", action="append", help="Run only specific service name(s)")
-    parser.add_argument("--live", action="store_true", help="Execute mutating actions (default is dry-run)")
+    parser.add_argument(
+        "--service", action="append", help="Run only specific service name(s)"
+    )
+    parser.add_argument(
+        "--live",
+        action="store_true",
+        help="Execute mutating actions (default is dry-run)",
+    )
     parser.add_argument("--verbose", action="store_true", help="Verbose logs")
     args = parser.parse_args()
 
@@ -928,7 +1101,11 @@ def main() -> int:
 
     selected = set(args.service or [])
     if selected:
-        services = [s for s in services if (s.get("name") in selected) or (s.get("connection_id") in selected)]
+        services = [
+            s
+            for s in services
+            if (s.get("name") in selected) or (s.get("connection_id") in selected)
+        ]
 
     if not services:
         print("No services to run.")

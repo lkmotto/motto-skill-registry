@@ -124,23 +124,23 @@ For each failing check, attempt remediation before escalating:
 CREDENTIALS
   ✅ github-token: healthy (expires 2026-06-15)
   ⚠️  ntreis-session: expiring in 3h (attempted renewal, pending re-auth)
-  
+
 DRIFT
   ✅ ntreis-login-page: no drift detected
   ✅ taxnet-search: no drift detected
-  
+
 MCP CONNECTIVITY
   ✅ comet-browser-control-handoff: connected, 6 tools
   ✅ smithery-smart: connected
-  
+
 SKILL FRESHNESS
   ✅ neon-ops: last updated 2026-06-06
-  
+
 DEPENDENCIES
   ✅ smithery CLI v2.1.0
   ✅ doppler CLI v3.68.0
   ✅ python 3.12
-  
+
 SESSION CAPACITY
   ✅ 12 sessions available
 

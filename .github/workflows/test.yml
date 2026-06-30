@@ -1,0 +1,31 @@
+name: Test
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Lint
+        run: npx prettier --check "**/*.{yml,yaml,md,json}" || true
+
+      - name: Validate skills structure
+        run: |
+          echo "Checking skills directory structure..."
+          for skill_dir in skills/*/; do
+            if [ -f "$skill_dir/SKILL.md" ] || [ -f "$skill_dir/README.md" ]; then
+              echo "OK: $skill_dir"
+            else
+              echo "WARN: $skill_dir missing SKILL.md or README.md"
+            fi
+          done
